@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet,View,Text,Image,} from 'react-native';
+import {StyleSheet,View,Text,Image,TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 
 export default class App extends Component{
   constructor(props){
@@ -7,12 +7,12 @@ export default class App extends Component{
     this.state = {
       //saves the state of the game in a 2d array
       game: [
-        [1, 0, 0],
+        [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]
       ],
       // 1 for cinnamon, 2 for donuts
-      turn: 1
+      turn: 0
     };
   }
 
@@ -38,28 +38,59 @@ export default class App extends Component{
     } else {
       return <View/>
     }
+  } 
+  // checkWinner = (row, col) => {
+  //   let sum = 0;
+  //   for(let i = 0; i < 3; i++){
+  //     sum += this.state.game[i][col];
+  //   }
+  // }
+  updateValue = (i, j) => {
+    // only respond if the tile isn't occupied
+    if (this.state.game[i][j] == 0){
+      let newPosition = this.state.game;
+      newPosition[i][j] = this.state.turn%2 + 1;
+      this.setState({
+        game: newPosition,
+        turn: this.state.turn + 1
+      });
+    }
   }
   render() {
     return (
       <View style = {styles.container}>
         <View style = {{flexDirection: "row"}}>
-          <View style = {[styles.box, {borderLeftWidth: 0, borderTopWidth: 0}]}>
+          <TouchableOpacity onPress={() => this.updateValue(0, 0)} style = {[styles.box, {borderLeftWidth: 0, borderTopWidth: 0}]}>
             {this.renderIcon(0, 0)}
-          </View>
-          <View style = {[styles.box, {borderTopWidth: 0}]}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.updateValue(0, 1)} style = {[styles.box, {borderTopWidth: 0}]}>
             {this.renderIcon(0, 1)}
-          </View>
-          <View style = {[styles.box, {borderRightWidth: 0, borderTopWidth: 0}]}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.updateValue(0, 2)} style = {[styles.box, {borderRightWidth: 0, borderTopWidth: 0}]}>
+          {this.renderIcon(0, 2)}
+          </TouchableOpacity>
         </View>
         <View style = {{flexDirection: "row"}}>
-          <View style = {[styles.box, {borderLeftWidth: 0}]}/>
-          <View style = {styles.box}/>
-          <View style = {[styles.box, {borderRightWidth: 0}]}/>
+          <TouchableOpacity onPress={() => this.updateValue(1, 0)} style = {[styles.box, {borderLeftWidth: 0}]}>
+          {this.renderIcon(1, 0)}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.updateValue(1, 1)} style = {styles.box}>
+          {this.renderIcon(1, 1)}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.updateValue(1, 2)} style = {[styles.box, {borderRightWidth: 0}]}>
+          {this.renderIcon(1, 2)}
+          </TouchableOpacity>
         </View>
         <View style = {{flexDirection: "row"}}>
-          <View style = {[styles.box, {borderLeftWidth: 0, borderBottomWidth: 0}]}/>
-          <View style = {[styles.box, {borderBottomWidth: 0}]}/>
-          <View style = {[styles.box, {borderBottomWidth: 0, borderRightWidth: 0}]}/>
+          <TouchableOpacity onPress={() => this.updateValue(2, 0)} style = {[styles.box, {borderLeftWidth: 0, borderBottomWidth: 0}]}>
+            {this.renderIcon(2, 0)}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.updateValue(2, 1)} style = {[styles.box, {borderBottomWidth: 0}]}>
+            {this.renderIcon(2, 1)}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.updateValue(2, 2)} style = {[styles.box, {borderBottomWidth: 0, borderRightWidth: 0}]}>
+            {this.renderIcon(2, 2)}
+          </TouchableOpacity>
         </View>
       </View>
     );
