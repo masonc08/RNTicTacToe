@@ -12,7 +12,8 @@ export default class App extends Component{
         [0, 0, 0]
       ],
       // -1 for cinnamon, -1 for donuts
-      turn: -1
+      turn: -1,
+      turns: 0
     };
   }
 
@@ -26,7 +27,9 @@ export default class App extends Component{
         [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]
-      ]
+      ],
+      turn: -1,
+      turns: 0
     })
   }
   renderIcon = (i, j) => {
@@ -65,28 +68,18 @@ export default class App extends Component{
       this.checkSums(sum);
       sum = 0;
     }
+    if(this.state.turns == 9){
+      alert("It was a tie!");
+      this.startGame();
+    }
   }
   checkSums = (sum) => {
     if(sum == -3){
       alert('Cinnamon wins!');
-      this.setState({
-        game: [
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0]
-        ],
-        turn: -1}
-      );
+      this.startGame();
     } else if (sum == 3){
       alert('Donut wins!');
-      this.setState({
-        game: [
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0]
-        ],
-        turn: -1}
-      );
+      this.startGame();
     }
   }
   updateValue = (i, j) => {
@@ -96,10 +89,14 @@ export default class App extends Component{
       newPosition[i][j] = this.state.turn;
       this.setState({
         game: newPosition,
-        turn: (this.state.turn == -1) ? 1 : -1
+        turn: (this.state.turn == -1) ? 1 : -1,
+        turns: this.state.turns++
       });
       this.checkWinner(i, j);
     }
+  }
+  renderTiles = () => {
+
   }
   render() {
     return (
