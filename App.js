@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet,View,Text,Image,TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
+import {Alert,StyleSheet,View,Text,Image,TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 
 export default class App extends Component{
   constructor(props){
@@ -11,8 +11,8 @@ export default class App extends Component{
         [0, 0, 0],
         [0, 0, 0]
       ],
-      // 1 for cinnamon, 2 for donuts
-      turn: 0
+      // -1 for cinnamon, -1 for donuts
+      turn: -1
     };
   }
 
@@ -31,29 +31,74 @@ export default class App extends Component{
   }
   renderIcon = (i, j) => {
     const value = this.state.game[i][j];
-    if(value == 1){
+    if(value == -1){
       return <Image style={styles.cinnamon} source={require("./cinnamon_sticks.jpg")}/>;
-    } else if (value == 2){
+    } else if (value == 1){
       return <Image style={styles.donut} source={require("./donut.jpg")}/>
     } else {
       return <View/>
     }
   } 
-  // checkWinner = (row, col) => {
-  //   let sum = 0;
-  //   for(let i = 0; i < 3; i++){
-  //     sum += this.state.game[i][col];
-  //   }
-  // }
+  checkWinner = (row, col) => {
+    let sum = 0;
+    for(let i = 0; i < 3; i++){
+      sum += this.state.game[i][col];
+    }
+    this.checkSums(sum);
+    sum = 0;
+    for(let i = 0; i < 3; i++){
+      sum += this.state.game[row][i];
+    }
+    this.checkSums(sum);
+    sum = 0;
+    if(row == col){
+      for(let i = 0; i < 3; i++){
+        sum += this.state.game[i][i];
+      }
+      this.checkSums(sum);
+      sum = 0;
+    }
+    if(row == 2 && col == 0 || row == 0 && col == 2){
+      for(let i = 0; i < 3; i++){
+        sum += this.state.game[i][2-i];
+      }
+      this.checkSums(sum);
+      sum = 0;
+    }
+  }
+  checkSums = (sum) => {
+    if(sum == -3){
+      alert('Cinnamon wins!');
+      this.setState({
+        game: [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        turn: -1}
+      );
+    } else if (sum == 3){
+      alert('Donut wins!');
+      this.setState({
+        game: [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        turn: -1}
+      );
+    }
+  }
   updateValue = (i, j) => {
     // only respond if the tile isn't occupied
     if (this.state.game[i][j] == 0){
       let newPosition = this.state.game;
-      newPosition[i][j] = this.state.turn%2 + 1;
+      newPosition[i][j] = this.state.turn;
       this.setState({
         game: newPosition,
-        turn: this.state.turn + 1
+        turn: (this.state.turn == -1) ? 1 : -1
       });
+      this.checkWinner(i, j);
     }
   }
   render() {
