@@ -1,5 +1,5 @@
-import OnePlayer from './OnePlayer';
-import TwoPlayer from './TwoPlayer';
+import OnePlayer from './OnePlayer/OnePlayer';
+import TwoPlayer from './TwoPlayer/TwoPlayer';
 
 export {
   OnePlayer,
