@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaCircle, FaTimes } from 'react-icons/fa';
 
 export default () => {
   const [board, setBoard] = useState([
@@ -21,13 +22,13 @@ export default () => {
   }
   const renderIcon = (i, j) => {
     const value = board[i][j];
-    // if (value == -1) {
-    //   return <Image style={styles.cinnamon} source={require("./cinnamon_sticks.jpg")}/>;
-    // } else if (value == 1){
-    //   return <Image style={styles.donut} source={require("./donut.jpg")}/>
-    // } else {
-    //   return null
-    // }
+    if (value === -1) {
+      return <FaTimes/>;
+    } else if (value === 1){
+      return <FaCircle/>;
+    } else {
+      return null;
+    }
   } 
   return null;
 }
