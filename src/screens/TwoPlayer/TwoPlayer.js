@@ -31,11 +31,11 @@ export default () => {
     }
   }
   const checkSum = sum => {
-    if(sum == -3){
+    if (sum === -3){
       alert('Player 1(X) wins!');
       setGameState(false);
       return true;
-    } else if (sum == 3){
+    } else if (sum === 3){
       alert('Player 2(O) wins!');
       setGameState(false);
       return true;
@@ -65,7 +65,7 @@ export default () => {
       sum = 0;
     }
     //check if the top right to bottom left diagonal has a win
-    if (row == 2 && col == 0 || row == 0 && col == 2) {
+    if ((row === 2 && col === 0) || (row === 0 && col === 2)) {
       for (let i = 0; i < 3; i++) {
         sum += board[i][2-i];
       }
@@ -73,7 +73,7 @@ export default () => {
       sum = 0;
     }
     //check if it's a tie
-    if (this.state.turns == 9) {
+    if (turns === 9) {
       alert("It was a tie!");
       setGameState(false);
       return;
@@ -81,11 +81,11 @@ export default () => {
   }
   const updateValue = (i, j) => {
     // only respond if the tile isn't occupied, and if the game hasn't ended
-    if (board[i][j] == 0 && gameState) {
+    if (board[i][j] === 0 && gameState) {
       let newPosition = board;
       newPosition[i][j] = playerTurn;
       setBoard(newPosition);
-      setPlayerTurn((playerTurn == -1) ? 1 : -1);
+      setPlayerTurn((playerTurn === -1) ? 1 : -1);
       setTurns(prevTurn => prevTurn + 1);
       checkWinner(i, j);
     }
