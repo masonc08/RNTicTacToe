@@ -1,5 +1,5 @@
 import React from 'react'
-import './Button.css'
+import './TileButton.css'
 
 export default function Square(props) {
   return (

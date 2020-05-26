@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaCircle, FaTimes } from 'react-icons/fa';
-import Button from '../../components/Button/Button';
+import { Button } from 'reactstrap';
+import TileButton from '../../components/TileButton/TileButton';
 import './TwoPlayer.css'
 
 export default () => {
@@ -95,38 +96,44 @@ export default () => {
   return (
     <div className="MainContainer">
       <div className="RowContainer">
-        <Button onClick={() => updateValue(0, 0)}>
+        <TileButton onClick={() => updateValue(0, 0)}>
           {renderIcon(0, 0)}
-        </Button>
-        <Button onClick={() => updateValue(0, 1)}>
+        </TileButton>
+        <TileButton onClick={() => updateValue(0, 1)}>
           {renderIcon(0, 1)}
-        </Button>
-        <Button onClick={() => updateValue(0, 2)}>
+        </TileButton>
+        <TileButton onClick={() => updateValue(0, 2)}>
           {renderIcon(0, 2)}
-        </Button>
+        </TileButton>
       </div>
       <div className="RowContainer">
-        <Button onClick={() => updateValue(1, 0)}>
+        <TileButton onClick={() => updateValue(1, 0)}>
           {renderIcon(1, 0)}
-        </Button>
-        <Button onClick={() => updateValue(1, 1)}>
+        </TileButton>
+        <TileButton onClick={() => updateValue(1, 1)}>
           {renderIcon(1, 1)}
-        </Button>
-        <Button onClick={() => updateValue(1, 2)}>
+        </TileButton>
+        <TileButton onClick={() => updateValue(1, 2)}>
           {renderIcon(1, 2)}
-        </Button>
+        </TileButton>
       </div>
       <div className="RowContainer">
-        <Button onClick={() => updateValue(2, 0)}>
+        <TileButton onClick={() => updateValue(2, 0)}>
           {renderIcon(2, 0)}
-        </Button>
-        <Button onClick={() => updateValue(2, 1)}>
+        </TileButton>
+        <TileButton onClick={() => updateValue(2, 1)}>
           {renderIcon(2, 1)}
-        </Button>
-        <Button onClick={() => updateValue(2, 2)}>
+        </TileButton>
+        <TileButton onClick={() => updateValue(2, 2)}>
           {renderIcon(2, 2)}
-        </Button>
+        </TileButton>
       </div>
+      <Button style={{marginTop: '25px'}} onClick={startGame}>
+        Clear Board
+      </Button>
+      <Button style={{marginTop: '5px'}} onClick={() => window.location.reload(false)}>
+        Back to Homescreen
+      </Button>
     </div>
   );
 }
