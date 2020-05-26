@@ -56,14 +56,14 @@ export default () => {
     for (let i = 0; i < 3; i++) {
       sum += board[row][i];
     }
-    if (this.checkSum(sum)) return;
+    if (checkSum(sum)) return;
     //check if the top left to bottom right diagonal has a win
     sum = 0;
     if (row === col) {
       for (let i = 0; i < 3; i++) {
         sum += board[i][i];
       }
-      if (this.checkSum(sum)) return;
+      if (checkSum(sum)) return;
       sum = 0;
     }
     //check if the top right to bottom left diagonal has a win
@@ -71,7 +71,7 @@ export default () => {
       for (let i = 0; i < 3; i++) {
         sum += board[i][2-i];
       }
-      if(this.checkSum(sum)) return;
+      if(checkSum(sum)) return;
       sum = 0;
     }
     //check if it's a tie
@@ -95,36 +95,36 @@ export default () => {
   return (
     <div className="MainContainer">
       <div className="RowContainer">
-        <Button onClick={() => console.log('5')}>
-          x
+        <Button onClick={() => updateValue(0, 0)}>
+          {renderIcon(0, 0)}
         </Button>
-        <Button onClick={() => console.log('5')}>
-          x
+        <Button onClick={() => updateValue(0, 1)}>
+          {renderIcon(0, 1)}
         </Button>
-        <Button onClick={() => console.log('5')}>
-          x
-        </Button>
-      </div>
-      <div className="RowContainer">
-        <Button onClick={() => console.log('5')}>
-          x
-        </Button>
-        <Button onClick={() => console.log('5')}>
-          x
-        </Button>
-        <Button onClick={() => console.log('5')}>
-          x
+        <Button onClick={() => updateValue(0, 2)}>
+          {renderIcon(0, 2)}
         </Button>
       </div>
       <div className="RowContainer">
-        <Button onClick={() => console.log('5')}>
-          x
+        <Button onClick={() => updateValue(1, 0)}>
+          {renderIcon(1, 0)}
         </Button>
-        <Button onClick={() => console.log('5')}>
-          x
+        <Button onClick={() => updateValue(1, 1)}>
+          {renderIcon(1, 1)}
         </Button>
-        <Button onClick={() => console.log('5')}>
-          x
+        <Button onClick={() => updateValue(1, 2)}>
+          {renderIcon(1, 2)}
+        </Button>
+      </div>
+      <div className="RowContainer">
+        <Button onClick={() => updateValue(2, 0)}>
+          {renderIcon(2, 0)}
+        </Button>
+        <Button onClick={() => updateValue(2, 1)}>
+          {renderIcon(2, 1)}
+        </Button>
+        <Button onClick={() => updateValue(2, 2)}>
+          {renderIcon(2, 2)}
         </Button>
       </div>
     </div>
