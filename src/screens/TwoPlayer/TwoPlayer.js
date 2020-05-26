@@ -89,6 +89,6 @@ export default () => {
       setTurns(prevTurn => prevTurn + 1);
       checkWinner(i, j);
     }
-    return null;
   }
+  return null;
 }
