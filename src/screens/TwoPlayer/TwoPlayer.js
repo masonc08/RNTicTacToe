@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { FaCircle, FaTimes } from 'react-icons/fa';
+import Button from '../../components/Button/Button';
+import './TwoPlayer.css'
 
 export default () => {
   const [board, setBoard] = useState([
@@ -90,5 +92,41 @@ export default () => {
       checkWinner(i, j);
     }
   }
-  return null;
+  return (
+    <div className="MainContainer">
+      <div className="RowContainer">
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+      </div>
+      <div className="RowContainer">
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+      </div>
+      <div className="RowContainer">
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+        <Button onClick={() => console.log('5')}>
+          x
+        </Button>
+      </div>
+    </div>
+  );
 }
