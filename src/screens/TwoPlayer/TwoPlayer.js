@@ -88,7 +88,9 @@ export default () => {
       let newPosition = board;
       newPosition[i][j] = playerTurn;
       setBoard(newPosition);
-      setPlayerTurn((playerTurn === -1) ? 1 : -1);
+      setPlayerTurn(prevPlayerTurn => {
+        return prevPlayerTurn === 1 ? -1 : 1;
+      });
       setTurns(prevTurn => prevTurn + 1);
       checkWinner(i, j);
     }
