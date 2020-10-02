@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { FaCircle, FaTimes } from 'react-icons/fa';
 import { Button } from 'reactstrap';
 import TileButton from '../../components/TileButton/TileButton';
-import './OnePlayer.css'
+import './OnePlayer.css';
+import { computeBestMove, checkWinner } from './logic';
 
 export default () => {
   const [board, setBoard] = useState([
@@ -14,16 +15,30 @@ export default () => {
   const [playerTurn, setPlayerTurn] = useState(-1);
   const [turns, setTurns] = useState(0);
   const [gameState, setGameState] = useState(true);
-  const [gameWinner, setGameWinner] = useState(0);
+  const [lastMove, setLastMove] = useState([0, 0]);
   useEffect(() => {
-      if (gameWinner === -1 || gameWinner === 1) {
-        alert(`${getChar(gameWinner)} was the winner!`);
-        setGameState(false);
-      } else if (gameWinner === 2) {
-        alert("It was a tie!");
-        setGameState(false);
-      }
-    }, [gameWinner]);
+    const winner = checkWinner(board, lastMove[0], lastMove[1]);
+    if (winner !== 0) {
+      alert(`${getChar(winner)} was the winner!`);
+      setGameState(false);
+      return;
+    } else if (turns === 9) {
+      alert("It was a tie!");
+      setGameState(false);
+      return;
+    }
+    if (playerTurn === 1) {
+      const boardCopy = [
+        [...board[0]],
+        [...board[1]],
+        [...board[2]]
+      ];
+      console.log(boardCopy, [...lastMove], turns, playerTurn)
+      const {move: computerMove} = computeBestMove(boardCopy, [...lastMove], turns, playerTurn);
+      updateValue(computerMove[0], computerMove[1]);
+    }
+  }, [board, turns, playerTurn, lastMove]);
+
   const startGame = () => {
     setBoard([
       [0, 0, 0],
@@ -53,112 +68,55 @@ export default () => {
       return null;
     }
   }
-  // Returns -1 if X wins, 1 if O wins, 0 if there was no win detected
-  const checkSum = sum => {
-    if (sum === -3){
-      return -1;
-    } else if (sum === 3){
-      return 1;
-    }
-    return 0;
-  }
 
-  // Returns -1 if X wins, 1 if O wins, 0 if there was no win detected
-  const checkWinner = (row, col) => {
-    //check if the column has a win
-    let sum = 0;
-    let winner = 0;
-    for (let i = 0; i < 3; i++) {
-      sum += board[i][col];
-    }
-    winner = checkSum(sum);
-    if (winner !== 0) {
-      return winner;
-    }
-    //check if the row has a win
-    sum = 0;
-    for (let i = 0; i < 3; i++) {
-      sum += board[row][i];
-    }
-    winner = checkSum(sum);
-    if (winner !== 0) {
-      return winner;
-    }
-    //check if the top left to bottom right diagonal has a win
-    sum = 0;
-    if (row === col) {
-      for (let i = 0; i < 3; i++) {
-        sum += board[i][i];
-      }
-      winner = checkSum(sum);
-      if (winner !== 0) {
-        return winner;
-      }
-      sum = 0;
-    }
-    //check if the top right to bottom left diagonal has a win
-    if ((row === 2 && col === 0) || (row === 0 && col === 2)) {
-      for (let i = 0; i < 3; i++) {
-        sum += board[i][2-i];
-      }
-      winner = checkSum(sum);
-      if (winner !== 0) {
-        return winner;
-      }
-      sum = 0;
-    }
-    return 0;
-  }
   const updateValue = (i, j) => {
+    let newPosition = board;
+    newPosition[i][j] = playerTurn;
+    setBoard(newPosition);
+    setPlayerTurn(prevPlayerTurn => -prevPlayerTurn);
+    setTurns(prevTurn => prevTurn + 1);
+    setLastMove([i, j]);
+  };
+
+  const handlePress = (i, j) => {
     // only respond if the tile isn't occupied, and if the game hasn't ended
     if (board[i][j] === 0 && gameState) {
-      let newPosition = board;
-      newPosition[i][j] = playerTurn;
-      setBoard(newPosition);
-      setPlayerTurn(prevPlayerTurn => {
-        return prevPlayerTurn === 1 ? -1 : 1;
-      });
-      setTurns(prevTurn => prevTurn + 1);
-      const winner = checkWinner(i, j);
-      if (winner !== 0) {
-        setGameWinner(winner);
-      } else if (turns === 9) {
-        setGameWinner(2);
-      }
+      updateValue(i, j);
     }
-  }
+  };
+
   return (
     <div className="MainContainer">
       <div className="RowContainer">
-        <TileButton onClick={() => updateValue(0, 0)}>
+        <TileButton onClick={() => handlePress(0, 0)}>
           {renderIcon(0, 0)}
         </TileButton>
-        <TileButton onClick={() => updateValue(0, 1)}>
+        <TileButton onClick={() => handlePress(0, 1)}>
           {renderIcon(0, 1)}
         </TileButton>
-        <TileButton onClick={() => updateValue(0, 2)}>
+        <TileButton onClick={() => handlePress(0, 2)}>
           {renderIcon(0, 2)}
         </TileButton>
       </div>
       <div className="RowContainer">
-        <TileButton onClick={() => updateValue(1, 0)}>
+        <TileButton onClick={() => handlePress(1, 0)}>
           {renderIcon(1, 0)}
         </TileButton>
-        <TileButton onClick={() => updateValue(1, 1)}>
+        <TileButton onClick={() => handlePress(1, 1)}>
           {renderIcon(1, 1)}
         </TileButton>
-        <TileButton onClick={() => updateValue(1, 2)}>
+        <TileButton onClick={() => handlePress(1, 2)}>
           {renderIcon(1, 2)}
         </TileButton>
       </div>
       <div className="RowContainer">
-        <TileButton onClick={() => updateValue(2, 0)}>
+        <TileButton onClick={() => handlePress(2, 0)}>
           {renderIcon(2, 0)}
         </TileButton>
-        <TileButton onClick={() => updateValue(2, 1)}>
+        <TileButton onClick={() => handlePress(2, 1)}>
           {renderIcon(2, 1)}
         </TileButton>
-        <TileButton onClick={() => updateValue(2, 2)}>
+        <TileButton onClick={() => handlePress(2, 2)}>
           {renderIcon(2, 2)}
         </TileButton>
       </div>
