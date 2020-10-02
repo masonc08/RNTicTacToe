@@ -12,12 +12,9 @@ export const computeBestMove = (board, lastMove, turns, playerTurn) => {
     for (let j=0; j<3; j++) {
       if (board[i][j] === 0) {
         board[i][j] = playerTurn;
-        const { res, move } = computeBestMove([
-          [...board[0]],
-          [...board[1]],
-          [...board[2]]
-        ], [i, j], turns+1, -playerTurn);
+        const { res } = computeBestMove(board, [i, j], turns+1, -playerTurn);
         if (res === playerTurn) {
+          board[i][j] = 0;
           return {res, move: [i, j]};
         }
         if (tieMove.length === 0 && res === 0) {
