@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCircle, FaTimes } from 'react-icons/fa';
 import { Button } from 'reactstrap';
 import TileButton from '../../components/TileButton/TileButton';
-import minimax from '../../utils/minimax'
 import './OnePlayer.css'
 
 export default () => {
@@ -11,17 +10,20 @@ export default () => {
     [0, 0, 0],
     [0, 0, 0]
   ]);
+  // -1 for X, 1 for O
   const [playerTurn, setPlayerTurn] = useState(-1);
   const [turns, setTurns] = useState(0);
   const [gameState, setGameState] = useState(true);
-  const [lastMove, setLastMove] = useState({i: 0, j: 0})
+  const [gameWinner, setGameWinner] = useState(0);
   useEffect(() => {
-    const gameEnd = checkWinner(lastMove.i, lastMove.j);
-    if (playerTurn === 1 && !gameEnd) {
-      const bestMove = computeBestMove();
-      updateValue(bestMove.i, bestMove.j);
-    }
-  }, [lastMove, gameState])
+      if (gameWinner === -1 || gameWinner === 1) {
+        alert(`${getChar(gameWinner)} was the winner!`);
+        setGameState(false);
+      } else if (gameWinner === 2) {
+        alert("It was a tie!");
+        setGameState(false);
+      }
+    }, [gameWinner]);
   const startGame = () => {
     setBoard([
       [0, 0, 0],
@@ -31,6 +33,15 @@ export default () => {
     setPlayerTurn(-1);
     setTurns(0);
     setGameState(true);
+  }
+  const getChar = num => {
+    if (num === 1) {
+      return "O";
+    }
+    if (num === -1) {
+      return "X";
+    }
+    throw new Error("No mapping found for number");
   }
   const renderIcon = (i, j) => {
     const value = board[i][j];
@@ -42,42 +53,47 @@ export default () => {
       return null;
     }
   }
+  // Returns -1 if X wins, 1 if O wins, 0 if there was no win detected
   const checkSum = sum => {
     if (sum === -3){
-      alert('Player 1(X) wins!');
-      setGameState(false);
-      return true;
+      return -1;
     } else if (sum === 3){
-      alert('Player 2(O) wins!');
-      setGameState(false);
-      return true;
+      return 1;
     }
-    return false;
+    return 0;
   }
+
+  // Returns -1 if X wins, 1 if O wins, 0 if there was no win detected
   const checkWinner = (row, col) => {
     //check if the column has a win
     let sum = 0;
-    let check = false;
+    let winner = 0;
     for (let i = 0; i < 3; i++) {
       sum += board[i][col];
     }
-    check = checkSum(sum);
-    if (check) return check;
+    winner = checkSum(sum);
+    if (winner !== 0) {
+      return winner;
+    }
     //check if the row has a win
     sum = 0;
     for (let i = 0; i < 3; i++) {
       sum += board[row][i];
     }
-    check = checkSum(sum);
-    if (check) return check;
+    winner = checkSum(sum);
+    if (winner !== 0) {
+      return winner;
+    }
     //check if the top left to bottom right diagonal has a win
     sum = 0;
     if (row === col) {
       for (let i = 0; i < 3; i++) {
         sum += board[i][i];
       }
-      check = checkSum(sum);
-      if (check) return check;
+      winner = checkSum(sum);
+      if (winner !== 0) {
+        return winner;
+      }
       sum = 0;
     }
     //check if the top right to bottom left diagonal has a win
@@ -85,16 +101,13 @@ export default () => {
       for (let i = 0; i < 3; i++) {
         sum += board[i][2-i];
       }
-      check = checkSum(sum);
-      if (check) return check;
+      winner = checkSum(sum);
+      if (winner !== 0) {
+        return winner;
+      }
       sum = 0;
     }
-    //check if it's a tie
-    if (turns === 9) {
-      alert("It was a tie!");
-      setGameState(false);
-      return true;
-    }
+    return 0;
   }
   const updateValue = (i, j) => {
     // only respond if the tile isn't occupied, and if the game hasn't ended
@@ -102,30 +115,17 @@ export default () => {
       let newPosition = board;
       newPosition[i][j] = playerTurn;
       setBoard(newPosition);
-      setPlayerTurn(prevPlayerTurn => prevPlayerTurn === 1 ? -1 : 1);
+      setPlayerTurn(prevPlayerTurn => {
+        return prevPlayerTurn === 1 ? -1 : 1;
+      });
       setTurns(prevTurn => prevTurn + 1);
-      setLastMove({i, j});
-    }
-  }
-  const computeBestMove = () => {
-    let bestScore = -Infinity;
-    let move;
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        // Is the spot available?
-        if (board[i][j] === 0) {
-          board[i][j] = 1;
-          let score = minimax(board, 0, false);
-          board[i][j] = 0;
-          if (score > bestScore) {
-            bestScore = score;
-            move = { i, j };
-          }
-        }
+      const winner = checkWinner(i, j);
+      if (winner !== 0) {
+        setGameWinner(winner);
+      } else if (turns === 9) {
+        setGameWinner(2);
       }
     }
-    console.log(move)
-    return move
   }
   return (
     <div className="MainContainer">
