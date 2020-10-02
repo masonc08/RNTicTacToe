@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCircle, FaTimes } from 'react-icons/fa';
 import { Button } from 'reactstrap';
 import TileButton from '../../components/TileButton/TileButton';
@@ -10,9 +10,20 @@ export default () => {
     [0, 0, 0],
     [0, 0, 0]
   ]);
+  // -1 for X, 1 for O
   const [playerTurn, setPlayerTurn] = useState(-1);
   const [turns, setTurns] = useState(0);
   const [gameState, setGameState] = useState(true);
+  const [gameWinner, setGameWinner] = useState(0);
+  useEffect(() => {
+      if (gameWinner === -1 || gameWinner === 1) {
+        alert(`${getChar(gameWinner)} was the winner!`);
+        setGameState(false);
+      } else if (gameWinner === 2) {
+        alert("It was a tie!");
+        setGameState(false);
+      }
+    }, [gameWinner]);
   const startGame = () => {
     setBoard([
       [0, 0, 0],
@@ -22,6 +33,15 @@ export default () => {
     setPlayerTurn(-1);
     setTurns(0);
     setGameState(true);
+  }
+  const getChar = num => {
+    if (num === 1) {
+      return "O";
+    }
+    if (num === -1) {
+      return "X";
+    }
+    throw new Error("No mapping found for number");
   }
   const renderIcon = (i, j) => {
     const value = board[i][j];
@@ -33,38 +53,47 @@ export default () => {
       return null;
     }
   }
+  // Returns -1 if X wins, 1 if O wins, 0 if there was no win detected
   const checkSum = sum => {
     if (sum === -3){
-      alert('Player 1(X) wins!');
-      setGameState(false);
-      return true;
+      return -1;
     } else if (sum === 3){
-      alert('Player 2(O) wins!');
-      setGameState(false);
-      return true;
+      return 1;
     }
-    return false;
+    return 0;
   }
+
+  // Returns -1 if X wins, 1 if O wins, 0 if there was no win detected
   const checkWinner = (row, col) => {
     //check if the column has a win
     let sum = 0;
+    let winner = 0;
     for (let i = 0; i < 3; i++) {
       sum += board[i][col];
     }
-    if (checkSum(sum)) return;
+    winner = checkSum(sum);
+    if (winner !== 0) {
+      return winner;
+    }
     //check if the row has a win
     sum = 0;
     for (let i = 0; i < 3; i++) {
       sum += board[row][i];
     }
-    if (checkSum(sum)) return;
+    winner = checkSum(sum);
+    if (winner !== 0) {
+      return winner;
+    }
     //check if the top left to bottom right diagonal has a win
     sum = 0;
     if (row === col) {
       for (let i = 0; i < 3; i++) {
         sum += board[i][i];
       }
-      if (checkSum(sum)) return;
+      winner = checkSum(sum);
+      if (winner !== 0) {
+        return winner;
+      }
       sum = 0;
     }
     //check if the top right to bottom left diagonal has a win
@@ -72,15 +101,13 @@ export default () => {
       for (let i = 0; i < 3; i++) {
         sum += board[i][2-i];
       }
-      if(checkSum(sum)) return;
+      winner = checkSum(sum);
+      if (winner !== 0) {
+        return winner;
+      }
       sum = 0;
     }
-    //check if it's a tie
-    if (turns === 9) {
-      alert("It was a tie!");
-      setGameState(false);
-      return;
-    }
+    return 0;
   }
   const updateValue = (i, j) => {
     // only respond if the tile isn't occupied, and if the game hasn't ended
@@ -92,7 +119,12 @@ export default () => {
         return prevPlayerTurn === 1 ? -1 : 1;
       });
       setTurns(prevTurn => prevTurn + 1);
-      checkWinner(i, j);
+      const winner = checkWinner(i, j);
+      if (winner !== 0) {
+        setGameWinner(winner);
+      } else if (turns === 9) {
+        setGameWinner(2);
+      }
     }
   }
   return (
