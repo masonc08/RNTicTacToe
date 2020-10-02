@@ -2,4 +2,6 @@
 A simple web-based TicTacToe featuring single and multi-player modes
 
 ### Gameplay
-![Two Player Mode](gameplay.png)
+
+#### AI Demo:
+![One Player Mode](demo.gif)
