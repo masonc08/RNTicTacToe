@@ -1,0 +1,9 @@
+.MainContainer {
+  flex-direction: column;
+  display: flex;
+}
+
+.RowContainer {
+  display: flex;
+  flex-direction: row;
+}
