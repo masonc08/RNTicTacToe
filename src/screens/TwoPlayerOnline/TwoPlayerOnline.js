@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './TwoPlayerOnline.css';
 import GameBoard from './Game';
 import { wsURL } from '../../config';
+import { getChar, checkWinner } from './logic';
 
 export default ({ oppID }) => {
   const [ opponentID, setOpponentID ] = useState(undefined);
@@ -14,7 +15,8 @@ export default ({ oppID }) => {
   // -1 for X, 1 for O
   const [ playerTurn, setPlayerTurn ] = useState(-1);
   const [ turns, setTurns ] = useState(0);
-  const player = useRef(-1)
+  const [ lastMove, setLastMove ] = useState([0, 0]);
+  const player = useRef(-1);
   const ws = useRef(undefined);
   useEffect(() => {
     if (oppID !== undefined) {
@@ -62,6 +64,7 @@ export default ({ oppID }) => {
               });
               setPlayerTurn(old => -old);
               setTurns(old => (old+1));
+              setLastMove(body.move);
             }
           }
           break;
@@ -70,6 +73,18 @@ export default ({ oppID }) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const winner = checkWinner(boardState, lastMove[0], lastMove[1]);
+    if (winner !== 0) {
+      alert(`${getChar(winner)} was the winner!`);
+      return;
+    }
+    if (turns === 9) {
+      alert("It was a tie!");
+      return;
+    }
+  }, [turns, lastMove]);
 
   const craftLink = id => (window.location.href+id);
 
