@@ -33,7 +33,6 @@ export default () => {
         [...board[1]],
         [...board[2]]
       ];
-      console.log(boardCopy, [...lastMove], turns, playerTurn)
       const {move: computerMove} = computeBestMove(boardCopy, [...lastMove], turns, playerTurn);
       updateValue(computerMove[0], computerMove[1]);
     }
